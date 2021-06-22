@@ -2,7 +2,9 @@
 % Please edit documentation in R/seedling.R
 \name{info_transform_seedling}
 \alias{info_transform_seedling}
-\title{create seedling cleaned database}
+\title{create seedling cleaned database
+
+create seedling cleaned database}
 \usage{
 info_transform_seedling(df_info, year_dependency = FALSE)
 }
@@ -15,9 +17,6 @@ info_transform_seedling(df_info, year_dependency = FALSE)
 cleaned database that i will use .. ???
 }
 \description{
-create seedling cleaned database
-}
-\details{
 transforms the seedling info data frame into the data cleaned format
 }
 \examples{

@@ -5,13 +5,10 @@
 #'
 #' @description kills plt for the seedling info data frame
 #' @param df dataframe
-#' @param num_deaths
+#' @param num_deaths ???? not sure now
 #'
-#' @return
+#' @return function ????
 #' @export
-#'
-#' @examples
-#' info_transform_seedling()
 random_death <- function(df, num_deaths) {
 
   deaths <- df %>%
