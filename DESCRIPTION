@@ -16,4 +16,5 @@ Imports:
     purrr,
     dplyr,
     tibble,
-    stringr
+    stringr,
+    magrittr
