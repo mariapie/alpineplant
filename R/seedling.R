@@ -117,9 +117,9 @@ info_transform_seedling <- function(df_info, year_dependency = FALSE) {
   }
 
   df_results <- dplyr::bind_rows(df_results) %>%
-    dyplr::mutate(trans = paste0(site, "_", plt)) %>%
-    dyplr::select(all_of(c("site", "trans", "plt", "year", "alive"))) %>%
-    dyplr::mutate_all(as.character)
+    dplyr::mutate(trans = paste0(site, "_", plt)) %>%
+    dplyr::select(all_of(c("site", "trans", "plt", "year", "alive"))) %>%
+    dplyr::mutate_all(as.character)
 
   return(df_results)
 
