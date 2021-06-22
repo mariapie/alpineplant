@@ -1,8 +1,8 @@
-#' create seedling cleaned database
+#' @title create seedling cleaned database
 #'
 #' create seedling cleaned database
 #'
-#' transforms the seedling info data frame into the data cleaned format
+#' @description transforms the seedling info data frame into the data cleaned format
 #' @param df_info initial database
 #' @param year_dependency allows for plants generation taking into account previous year
 #'
@@ -15,21 +15,21 @@ info_transform_seedling <- function(df_info, year_dependency = FALSE) {
 
 
   df_info <- df_info %>%
-    select("site", "year", "SSsd", "NSsd", "NDsd") %>%
-    arrange(site, year) %>% #arrange rows by variables
-    mutate_at(.vars = c("SSsd", "NSsd", "NDsd"), .funs = as.numeric) #.vars is a list of columns
+   dplyr::select("site", "year", "SSsd", "NSsd", "NDsd") %>%
+   dplyr::arrange(site, year) %>% #arrange rows by variables
+   dplyr::mutate_at(.vars = c("SSsd", "NSsd", "NDsd"), .funs = as.numeric) #.vars is a list of columns
 
   sites <- df_info$site %>% unique() #duplicate elements/rows removed
 
   df_results <- vector("list", length(sites)) %>%
-    set_names(sites)
+    purrr::set_names(sites)
 
   for (s in sites) {
 
     cat(paste("\nTrasforming info for site", s, "...\n\n"))
 
     df_tmp <- df_info %>%
-      filter(site == s) %>%
+      dplyr::filter(site == s) %>%
       dplyr::slice(-n())
     years <- df_tmp$year %>% unique()
     ss_old <- ns_old <- nd_old <- max_id_old <- NULL
@@ -37,8 +37,8 @@ info_transform_seedling <- function(df_info, year_dependency = FALSE) {
     for (y in seq_along(years)) {
 
       values_tmp <- df_tmp %>%
-        filter(year == years[y]) %>%
-        select(-site, -year)
+        dplyr::filter(year == years[y]) %>%
+        dplyr::select(-site, -year)
       ss_tmp <- values_tmp$SSsd
       ns_tmp <- values_tmp$NSsd
       nd_tmp <- values_tmp$NDsd
@@ -49,7 +49,7 @@ info_transform_seedling <- function(df_info, year_dependency = FALSE) {
 
       if (years[y] == years[1]) { # se primo anno
 
-        res_tmp <- tibble(
+        res_tmp <- tibble::tibble(
           "site" = rep(s, ss_tmp),
           "plt" = paste0("id_", 1:ss_tmp),
           "year" = rep(years[y], ss_tmp),
@@ -64,8 +64,8 @@ info_transform_seedling <- function(df_info, year_dependency = FALSE) {
         if (year_dependency) { # dipendenza tra un anno e l'altro nella generazione delle piante
 
           res_tmp <- res %>%
-            filter(year == years[y - 1] & alive == 1) %>%
-            mutate(year = years[y])
+            dplyr::filter(year == years[y - 1] & alive == 1) %>%
+            dplyr::mutate(year = years[y])
 
           if (nd_tmp > ns_old) {
             message(paste("Site", s, ": ND of year", years[y], "is greater than NS of year", years[y - 1],
@@ -78,9 +78,9 @@ info_transform_seedling <- function(df_info, year_dependency = FALSE) {
           # aggiungo la differenza delle piante sopravvissute
           ns_diff <- ns_tmp - sum(res_tmp$alive)
           if (ns_diff > 0) {
-            res_tmp <- bind_rows(
+            res_tmp <- dplyr::bind_rows(
               res_tmp,
-              tibble(
+              tibble::tibble(
                 "site" = rep(s, ns_diff),
                 "plt" = paste0("id_", (max_id_old + 1):(max_id_old + ns_diff)),
                 "year" = rep(years[y], ns_diff),
@@ -89,18 +89,18 @@ info_transform_seedling <- function(df_info, year_dependency = FALSE) {
             )
           }
 
-          res <- bind_rows(res, res_tmp)
+          res <- dplyr::bind_rows(res, res_tmp)
 
         } else {# indipendenza tra gli anni nella generazione delle piante
 
-          res_tmp <- tibble(
+          res_tmp <- tibble::tibble(
             "site" = rep(s, ss_tmp),
             "plt" = paste0("id_", (max_id_old + 1):(max_id_old + ss_tmp)),
             "year" = rep(years[y], ss_tmp),
             "alive" = c(rep(1, ns_tmp), rep(0, nd_tmp))
           )
 
-          res <- bind_rows(res, res_tmp)
+          res <- dplyr::bind_rows(res, res_tmp)
 
         }
 
@@ -110,7 +110,7 @@ info_transform_seedling <- function(df_info, year_dependency = FALSE) {
       ss_old <- ss_tmp
       ns_old <- ns_tmp
       nd_old <- nd_tmp
-      max_id_old <- res$plt %>% unique() %>% str_extract("\\d+") %>% as.numeric() %>% max()
+      max_id_old <- res$plt %>% unique() %>% stringr::str_extract("\\d+") %>% as.numeric() %>% max()
 
     }
 
@@ -118,10 +118,10 @@ info_transform_seedling <- function(df_info, year_dependency = FALSE) {
 
   }
 
-  df_results <- bind_rows(df_results) %>%
-    mutate(trans = paste0(site, "_", plt)) %>%
-    select(all_of(c("site", "trans", "plt", "year", "alive"))) %>%
-    mutate_all(as.character)
+  df_results <- dplyr::bind_rows(df_results) %>%
+    dyplr::mutate(trans = paste0(site, "_", plt)) %>%
+    dyplr::select(all_of(c("site", "trans", "plt", "year", "alive"))) %>%
+    dyplr::mutate_all(as.character)
 
   return(df_results)
 
