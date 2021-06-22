@@ -19,6 +19,3 @@ cleaned database that i will use .. ???
 \description{
 transforms the seedling info data frame into the data cleaned format
 }
-\examples{
-info_transform_seedling()
-}

@@ -11,14 +11,11 @@ random_death(df, num_deaths)
 \arguments{
 \item{df}{dataframe}
 
-\item{num_deaths}{}
+\item{num_deaths}{???? not sure now}
 }
 \value{
-
+function ????
 }
 \description{
 kills plt for the seedling info data frame
-}
-\examples{
-info_transform_seedling()
 }
