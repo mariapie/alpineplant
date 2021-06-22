@@ -8,9 +8,7 @@
 #'
 #' @return cleaned database that i will use .. ???
 #' @export
-#'
-#' @examples
-#' info_transform_seedling()
+
 info_transform_seedling <- function(df_info, year_dependency = FALSE) {
 
 
