@@ -17,7 +17,7 @@ random_death <- function(df, num_deaths) {
     purrr::pluck("plt")
   df_tmp <- df[df$plt %in% deaths,] %>%
     dplyr::mutate(alive = 0)
-  df <- dplyr::bind_rows(df %>% filter(!plt %in% deaths),
+  df <- dplyr::bind_rows(df %>% dplyr::filter(!plt %in% deaths),
                   df_tmp) %>%
     dplyr::arrange(site, year, plt)
 
