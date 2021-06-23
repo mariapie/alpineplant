@@ -6,7 +6,7 @@
 #' @param df_info initial database
 #' @param year_dependency allows for plants generation taking into account previous year
 #'
-#' @return cleaned database that i will use .. ???
+#' @return cleaned database
 #' @export
 
 info_transform_seedling <- function(df_info, year_dependency = FALSE) {
