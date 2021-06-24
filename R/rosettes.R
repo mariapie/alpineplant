@@ -117,7 +117,7 @@ info_transform <- function(df_info, year_dependency = FALSE) {
       ns_old <- ns_tmp
       nd_old <- nd_tmp
       ng_old <- ng_tmp
-      max_id_old <- res$plt %>% unique() %>% str_extract("\\d+") %>% as.numeric() %>% max()
+      max_id_old <- res$plt %>% unique() %>% stringr::str_extract("\\d+") %>% as.numeric() %>% max()
 
     }
 
@@ -126,9 +126,9 @@ info_transform <- function(df_info, year_dependency = FALSE) {
   }
 
   df_results <- dplyr::bind_rows(df_results) %>%
-    mutate(trans = paste0(site, "_", plt), x = NA, y = NA, frt = NA, a1 = NA, a2 = NA, pm = NA, area = NA, tp = NA) %>%
-    select(all_of(c("site", "trans", "plt", "x", "y", "year", "ros", "frt", "a1", "a2", "pm", "area", "tp", "alive"))) %>%
-    mutate_all(as.character)
+    dplyr::mutate(trans = paste0(site, "_", plt), x = NA, y = NA, frt = NA, a1 = NA, a2 = NA, pm = NA, area = NA, tp = NA) %>%
+    dplyr::select(all_of(c("site", "trans", "plt", "x", "y", "year", "ros", "frt", "a1", "a2", "pm", "area", "tp", "alive"))) %>%
+    dplyr::mutate_all(as.character)
 
   return(df_results)
 
