@@ -14,7 +14,7 @@ info_transform_seedling(df_info, year_dependency = FALSE)
 \item{year_dependency}{allows for plants generation taking into account previous year}
 }
 \value{
-cleaned database that i will use .. ???
+cleaned database
 }
 \description{
 transforms the seedling info data frame into the data cleaned format
