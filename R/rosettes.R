@@ -13,30 +13,30 @@ info_transform <- function(df_info, year_dependency = FALSE) {
 
 
   df_info <- df_info %>%
-    select("site", "year", "SS1r", "NS1r", "ND1r", "NG1r") %>%
-    arrange(site, year) %>%
-    mutate_at(.vars = c("SS1r", "NS1r", "ND1r", "NG1r"), .funs = as.numeric)
+    dplyr::select("site", "year", "SS1r", "NS1r", "ND1r", "NG1r") %>%
+    dplyr::arrange(site, year) %>%
+    dplyr::mutate_at(.vars = c("SS1r", "NS1r", "ND1r", "NG1r"), .funs = as.numeric)
 
   sites <- df_info$site %>% unique()
 
   df_results <- vector("list", length(sites)) %>%
-    set_names(sites)
+    purrr::set_names(sites)
 
   for (s in sites) {
 
     cat(paste("\nTrasforming info for site", s, "...\n\n"))
 
     df_tmp <- df_info %>%
-      filter(site == s) %>%
-      slice(-n())
+      dplyr::filter(site == s) %>%
+      dplyr::slice(-n())
     years <- df_tmp$year %>% unique()
     ss_old <- ns_old <- nd_old <- ng_old <- max_id_old <- NULL
 
     for (y in seq_along(years)) {
 
       values_tmp <- df_tmp %>%
-        filter(year == years[y]) %>%
-        select(-site, -year)
+        dplyr::filter(year == years[y]) %>%
+        dplyr::select(-site, -year)
       ss_tmp <- values_tmp$SS1r
       ns_tmp <- values_tmp$NS1r
       nd_tmp <- values_tmp$ND1r
@@ -48,7 +48,7 @@ info_transform <- function(df_info, year_dependency = FALSE) {
 
       if (years[y] == years[1]) { # se primo anno
 
-        res_tmp <- tibble(
+        res_tmp <- tibble::tibble(
           "site" = rep(s, ss_tmp),
           "plt" = paste0("id_", 1:ss_tmp),
           "year" = rep(years[y], ss_tmp),
@@ -64,8 +64,8 @@ info_transform <- function(df_info, year_dependency = FALSE) {
         if (year_dependency) { # dipendenza tra un anno e l'altro nella generazione delle piante
 
           res_tmp <- res %>%
-            filter(year == years[y - 1] & alive == 1) %>%
-            mutate(year = years[y])
+            dplyr::filter(year == years[y - 1] & alive == 1) %>%
+            dplyr::mutate(year = years[y])
 
           if (nd_tmp > ns_old) {
             message(paste("Site", s, ": ND of year", years[y], "is greater than NS of year", years[y - 1],
@@ -78,8 +78,8 @@ info_transform <- function(df_info, year_dependency = FALSE) {
           # aggiungo la differenza delle piante sopravvissute
           ns_diff <- ns_tmp - sum(res_tmp$alive)
           if (ns_diff > 0) {
-            res_tmp <- bind_rows(res_tmp,
-                                 tibble(
+            res_tmp <- dplyr::bind_rows(res_tmp,
+                                 tibble::tibble(
                                    "site" = rep(s, ns_diff),
                                    "plt" = paste0("id_", (max_id_old + 1):(max_id_old + ns_diff)),
                                    "year" = rep(years[y], ns_diff),
@@ -94,11 +94,11 @@ info_transform <- function(df_info, year_dependency = FALSE) {
             res_tmp <- random_growth(df = res_tmp, num_growths = ng_tmp)
           }
 
-          res <- bind_rows(res, res_tmp)
+          res <- dplyr::bind_rows(res, res_tmp)
 
         } else {# indipendenza tra gli anni nella generazione delle piante
 
-          res_tmp <- tibble(
+          res_tmp <- tibble::tibble(
             "site" = rep(s, ss_tmp),
             "plt" = paste0("id_", (max_id_old + 1):(max_id_old + ss_tmp)),
             "year" = rep(years[y], ss_tmp),
@@ -106,7 +106,7 @@ info_transform <- function(df_info, year_dependency = FALSE) {
             "alive" = c(rep(1, ns_tmp), rep(0, nd_tmp))
           )
 
-          res <- bind_rows(res, res_tmp)
+          res <- dplyr::bind_rows(res, res_tmp)
 
         }
 
@@ -125,7 +125,7 @@ info_transform <- function(df_info, year_dependency = FALSE) {
 
   }
 
-  df_results <- bind_rows(df_results) %>%
+  df_results <- dplyr::bind_rows(df_results) %>%
     mutate(trans = paste0(site, "_", plt), x = NA, y = NA, frt = NA, a1 = NA, a2 = NA, pm = NA, area = NA, tp = NA) %>%
     select(all_of(c("site", "trans", "plt", "x", "y", "year", "ros", "frt", "a1", "a2", "pm", "area", "tp", "alive"))) %>%
     mutate_all(as.character)
