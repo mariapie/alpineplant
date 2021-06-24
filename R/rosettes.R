@@ -28,7 +28,7 @@ info_transform <- function(df_info, year_dependency = FALSE) {
 
     df_tmp <- df_info %>%
       dplyr::filter(site == s) %>%
-      dplyr::slice(-n())
+      dplyr::slice(-dplyr::n())
     years <- df_tmp$year %>% unique()
     ss_old <- ns_old <- nd_old <- ng_old <- max_id_old <- NULL
 
